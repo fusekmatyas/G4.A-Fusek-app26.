@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>FoodExpress - Objednávka jídla</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: #f5f5f5;
+    }
+
+    header {
+        background: #ff6b00;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    header img {
+        height: 60px;
+        vertical-align: middle;
+    }
+
+    h1 {
+        display: inline;
+        margin-left: 10px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    .menu-item {
+        background: white;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    input[type="number"] {
+        width: 60px;
+    }
+
+    .summary {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    .form-section {
+        margin-top: 20px;
+    }
+
+    input, button {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        background: #ff6b00;
+        color: white;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #e55d00;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png">
+    <h1>FoodExpress</h1>
+</header>
+
+<div class="container">
+
+    <h2>Menu</h2>
+
+    <div id="menu"></div>
+
+    <div class="summary">
+        <h3>Souhrn objednávky</h3>
+        <p>Počet kusů: <span id="totalItems">0</span></p>
+        <p>Celková cena: <span id="totalPrice">0</span> Kč</p>
+    </div>
+
+    <div class="form-section">
+        <h3>Kontaktní údaje</h3>
+        <input type="text" id="firstName" placeholder="Jméno">
+        <input type="text" id="lastName" placeholder="Příjmení"><br>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="tel" id="phone" placeholder="Telefon"><br>
+
+        <button onclick="submitOrder()">ODESLAT OBJEDNÁVKU</button>
+    </div>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+// Simulace dat (místo CSV)
+const products = [
+    {name: "Pizza", price: 150},
+    {name: "Burger", price: 120},
+    {name: "Těstoviny", price: 130},
+    {name: "Salát", price: 100}
+];
+
+const menuDiv = document.getElementById("menu");
+
+products.forEach((product, index) => {
+    menuDiv.innerHTML += `
+        <div class="menu-item">
+            <span>${product.name} - ${product.price} Kč</span>
+            <input type="number" min="0" value="0" onchange="updateTotal()"
+                id="qty-${index}">
+        </div>
+    `;
+});
+
+function updateTotal() {
+    let totalItems = 0;
+    let totalPrice = 0;
+
+    products.forEach((product, index) => {
+        let qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
+        totalItems += qty;
+        totalPrice += qty * product.price;
+    });
+
+    document.getElementById("totalItems").innerText = totalItems;
+    document.getElementById("totalPrice").innerText = totalPrice;
+}
+
+function submitOrder() {
+    const firstName = document.getElementById("firstName").value;
+    const lastName = document.getElementById("lastName").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+
+    if (!firstName || !lastName || !email || !phone) {
+        alert("Vyplň všechny údaje!");
+        return;
+    }
+
+    let orderSummary = "Objednávka:\n";
+
+    products.forEach((product, index) => {
+        let qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
+        if (qty > 0) {
+            orderSummary += `${product.name}: ${qty} ks\n`;
+        }
+    });
+
+    orderSummary += `\nCelkem: ${document.getElementById("totalPrice").innerText} Kč\n`;
+    orderSummary += `\nZákazník:\n${firstName} ${lastName}\n${email}\n${phone}`;
+
+    // Simulace e-mailu
+    document.getElementById("result").innerText = orderSummary;
+
+    alert("Objednávka byla vytvořena (simulace odeslání e-mailu)");
+}
+
+</script>
+
+</body>
+</html>
+``
